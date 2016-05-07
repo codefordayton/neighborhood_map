@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Neighborhood Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Code For Dayton">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="/static/leaflet.css" />
+  </head>
+  <body>
+    map:
+    <div id="homemap" style="height: 180px"></div>
+    <script src="/static/js/jquery.min.js"> </script>
+    <script src="/static/js/leaflet.js"> </script>
+    <script src="/static/js/leaflet.label.js"> </script>
+  <script type="text/javascript">
+      function onEachFeature(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.name) {
+          layer.bindLabel(feature.properties.name);
+        }
+      };
+  </script>
+<script type="text/javascript">
+    var map = L.map('homemap').setView([39.768948, -84.191607], 13);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    var style = {
+      "clickable": true,
+      "color": "#00D",
+      "fillColor": "#00D",
+      "weight": 1.0,
+      "opacity": 0.3,
+      "fillOpacity": 0.2
+    };
+    $.getJSON("/static/js/neighborhoods.json", function (data) {
+      L.geoJson(data, {style: style, onEachFeature: onEachFeature}).addTo(map);
+    });
+</script>
+  </body>
+</html>
+
+
