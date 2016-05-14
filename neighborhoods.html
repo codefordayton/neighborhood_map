@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Neighborhoods</title>
+    <meta name="description" content="">
+    <meta name="author" content="Code For Dayton">
+
+
+  </head>
+  <body>
+<p id="Neighborhood"></p>
+<script src="/static/js/tabletop.js"> </script>
+    
+
+  <script type="text/javascript">
+  window.onload = function() { init() };
+
+  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1_pxkhCXsUd5e4wG4aJYqPdcOMEmu8FJjNjq3K0VanVs/pubhtml';
+
+  function init() {
+    Tabletop.init( { key: public_spreadsheet_url,
+                     callback: showInfo,
+                     simpleSheet: true } )
+  }
+
+  function showInfo(data) {
+        // data comes through as a simple array since simpleSheet is turned on
+
+        var uri = window.location.search;
+        var dec = decodeURI(uri);
+        var name = dec.substring(6);
+
+        var description = "";
+
+        for (i = 0; i < data.length; i++) { 
+          if(name == data[i].Name){
+            description = data[i].Description;
+          }
+        } 
+
+        document.getElementById("Neighborhood").innerHTML = 
+          "<strong>Neighborhood:</strong> " + name + "<BR>" +
+          "<strong>Description:</strong> " +  description;
+      
+      }
+
+
+      document.write("The published spreadsheet is located at <a target='_new' href='" + public_spreadsheet_url + "'>" + public_spreadsheet_url + "</a>");    
+</script>
+  </body>
+</html>
+
+
