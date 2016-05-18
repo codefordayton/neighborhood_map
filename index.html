@@ -18,15 +18,28 @@
     <script src="/static/js/jquery.min.js"> </script>
     <script src="/static/js/leaflet.js"> </script>
     <script src="/static/js/leaflet.label.js"> </script>
-  <script type="text/javascript">
-      function onEachFeature(feature, layer) {
-        // does this feature have a property named popupContent?
-        if (feature.properties && feature.properties.name) {
-          layer.bindLabel(feature.properties.name);
-        }
-      };
-  </script>
+    <script src="/static/js/tabletop.js"> </script>
+
 <script type="text/javascript">
+window.onload = function() { init() };
+
+  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1_pxkhCXsUd5e4wG4aJYqPdcOMEmu8FJjNjq3K0VanVs/pubhtml';
+
+  function init() {
+    Tabletop.init( { key: public_spreadsheet_url,
+                     callback: showInfo,
+                     simpleSheet: true } )
+  }
+
+  var sheetData;
+
+  function showInfo(data) {
+        // data comes through as a simple array since simpleSheet is turned on
+        sheetData = data;
+
+      
+      }
+
     var map = L.map('homemap').setView([39.768948, -84.191607], 13);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -42,24 +55,39 @@
     };
     $.getJSON("/static/js/neighborhoods.json", function (data) {
       L.geoJson(data, {style: style, onEachFeature: onEachFeature}).addTo(map);
-    });
+    });    
     
 function onEachFeature(feature, layer) {
     
+  if (feature.properties && feature.properties.name) {
+          layer.bindLabel(feature.properties.name);
+        }
+
     layer.on('click', function (e) {
-      
+
+      var description = "";
       console.log(feature.properties.name);
-      var uri = "neighborhoods.html?name=" + feature.properties.name;
-      var res = encodeURI(uri);
-      window.open(res,"_self")
+
+        for (i = 0; i < sheetData.length; i++) {
+          console.log(sheetData[i].Name);
+          if(feature.properties.name == sheetData[i].Name){
+            description = sheetData[i].Description;
+            console.log(sheetData[i].Description);
+          }
+        }
+
+        
+      
+      var popup = L.popup()
+      .setLatLng(e.latlng)
+      .setContent(feature.properties.name + '<br>' + description)
+      .openOn(map);
 
     });
 
-
 }
 
-
-
+     document.write("The published spreadsheet is located at <a target='_new' href='" + public_spreadsheet_url + "'>" + public_spreadsheet_url + "</a>"); 
 </script>
   </body>
 </html>
