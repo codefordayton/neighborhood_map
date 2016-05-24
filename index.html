@@ -44,7 +44,7 @@ window.onload = function() { init() };
 
       }
 
-    var map = L.map('homemap').setView([39.768948, -84.191607], 13);
+    var map = L.map('homemap').setView([39.768948, -84.191607], 12);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -68,7 +68,6 @@ function onEachFeature(feature, layer) {
         }
 
     layer.on('click', function (e) {
-
       var description = "";
       console.log(feature.properties.name);
 
