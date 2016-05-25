@@ -65,11 +65,32 @@ window.onload = function() { init() };
 
 function onEachFeature(feature, layer) {
 
-  if (feature.properties && feature.properties.name) {
-          layer.bindLabel(feature.properties.name);
-        }
+  var marker;
+    
+  layer.on('mouseover', function () {
+      this.setStyle({
+        'fillColor': 'green'
+      });
+
+      marker = L.marker(layer.getBounds().getCenter()).bindLabel(feature.properties.name, {
+    noHide: true,
+    direction: 'auto',
+    zIndexOffset: 600
+    }).addTo(map);
+
+
+  });
+
+  layer.on('mouseout', function () {
+      this.setStyle({
+        'fillColor': '#00D'
+      });
+      marker.setOpacity(0);
+    });
 
     layer.on('click', function (e) {
+        marker.setOpacity(0);
+
       var description = "";
       console.log(feature.properties.name);
 
